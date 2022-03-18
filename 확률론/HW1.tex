@@ -1,0 +1,105 @@
+\documentclass[12pt]{article}
+
+\title{Probability Theory}
+\author{Sung Jae Hyuk\\Majoring in Computer Science $\&$ Mathematics\\Korea University}
+\date{}
+
+\usepackage{indentfirst}
+\usepackage[shortlabels]{enumitem}
+\usepackage{kotex}
+\usepackage{amsmath, amssymb, amsthm, amsfonts, graphics, epsfig, fancyhdr}
+\setlength{\headheight}{28pt}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[R]{Sung Jae Hyuk \\ Probability theory, HW1}
+\fancyfoot[C]{\thepage}
+
+\setlength\parindent{12pt}
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem*{definition}{Definition}
+
+\renewcommand{\qedsymbol}{\ensuremath{\blacksquare}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+
+\begin{document}
+	\maketitle
+	\newpage
+\section*{Problem 1}
+	\subsection*{Statement}
+	Suppose $8$ identical blackboards are to be divided among $4$ schools.
+	\begin{enumerate}[(a)]
+		\item How many divisions are possible?
+		\item How many if each school must receive at least $1$ blackboard?
+	\end{enumerate}
+	\subsection*{Solution}
+	\begin{enumerate}[(a)]
+		\item  Every blackboards can be divided any school.
+		\\Hence, the total number of divisions is $\underbrace{4\times4\times\cdots\times4}_{8\ \text{blackboards}}=4^8$
+		\item  Let us use inclusion-exclusion principle.
+		\\ First, There are $4^8$ ways on which all schools receive blackboards.
+		\\ Second, There are $3^8\times\binom{4}{1}$ ways on which only one school doesn't receive blackboard.
+		\\ Third, There are $2^8\times\binom{4}{2}$ ways on which two schools don't recevie blackboard.
+		\\ Lastly, There are $\binom{4}{3}$ ways on which only one school receives blackboard.
+		\\ Hence, the total number of cases is
+		$$4^8-4\times3^8+6\times2^8-4\times1=40824$$
+	\end{enumerate}
+\newpage
+\section*{Problem 2}
+\subsection*{Statement}
+A $5$-card hand is dealt from a well-shuffled deck of $52$ playing cards. What is the probability that the hand contains at least one card from each of the four suits?
+\subsection*{Solution}
+First we know that there are $13$ cards for each suits.
+\par Thus, we can evaluate the probability by choosing a suit to be contained twice, and choosing a card for each suit.
+\par The denominator is $\binom{52}{5}$, and the numerator is product of the number of ways of choosing one among four suits and choosing a card from each suits.
+\par Because first is $4$ and second is $13^3\times \binom{13}{2}$, probability is
+$$\begin{aligned}
+	\dfrac{4\times 13^3\times \binom{13}{2}}{\binom{52}{5}}&=\dfrac{4\times13^3\times13\times12\times5!}{52\times51\times50\times49\times48\times2!}
+	\\&=\dfrac{2197}{8330}\approx0.26
+\end{aligned}$$
+\newpage
+\section*{Problem 3}
+\subsection*{Statement}
+From a group of $3$ first-year students, $4$ sophomores, $4$ juniors, and $3$ seniors, a committee of size $4$ is randomly selected. Find the probability that the committee will consist of
+\begin{enumerate}[(a)]
+	\item $1$ from each class
+	\item $2$ sophomores and $2$ juniors
+	\item Only sophomores or juniors
+\end{enumerate}
+\subsection*{Solution}
+First, there are $\binom{14}{4}$ ways of selecting student randomly.
+\begin{enumerate}[(a)]
+	\item Let $n_1,n_2,\cdots,n_k$ be the group sizes.
+	\\ If we select only one student each group, then there are $n_1\times n_2\times \cdots n_k$ ways by product rule.
+	\\ Hence there are $3\times 4\times 4\times 3=144$ ways of selecting member, the probability is $\dfrac{144}{1001}\approx0.14$
+	\item There are $\binom{4}{2}$ ways of selecting $2$ sophomores, and $\binom{4}{2}$ ways of selecting $2$ juniors.
+	\\ As $\binom{4}{2}=6$, there are $6^2=36$ ways on which committee will consist of $2$ sophomores and $2$ juniors, the probability is $\dfrac{36}{1001}\approx0.04$.
+	\item There are $4$ students in not only sophomores but juniors, hence The number of choosing committee member is $1$
+	Thus, the total number of selecting member is $1+1=2$, the probability is $\dfrac{2}{1001}\approx0.002$
+\end{enumerate}
+\newpage
+\section*{Problem 4}
+\subsection*{Statement}
+A hospital administrator codes incoming patients suffering gunshot wounds according to whether they have insurance (coding $1$ if they do and $0$ if they do not) and according to their condition, which is rated as good (g), fair (f), or serious (s). Consider an experiment that consists of the coding of such a patient.
+\begin{enumerate}[(a)]
+	\item Give the sample space of this experiment
+	\item Let $A$ be the event that the patient is in serious condition. Specify the outcomes in $A$
+	\item Let $B$ be the event that the patient is uninsured. Specify the outcomes in $B$
+	\item Give all the outcomes in the event $B^c\cup A$
+\end{enumerate}
+\subsection*{Solutioin}
+
+\newpage
+\section*{Problem 5}
+\subsection*{Statement}
+Suppose that Seoul-metro consists of $n$ cars, and $k\ (k\geq n)$ passengers get on it by selecting one of their cars randomly. Find the probability that there will be at least one passenger in each car.
+\subsection*{Solution}
+asdfasdf
+\end{document}
