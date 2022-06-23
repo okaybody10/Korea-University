@@ -1,6 +1,8 @@
 import io
+from lib2to3.pgen2.tokenize import tokenize
 import os
 import time
+from tokenize import Token
 import unicodedata
 import re
 from venv import create
@@ -8,6 +10,8 @@ from venv import create
 import numpy as np
 import tensorflow as tf
 from sklearn.model_selection import train_test_split
+from keras.preprocessing.text import Tokenizer
+from keras.preprocessing.sequence import pad_sequences
 
 # kor-eng text path
 # English - <Tab> - Korean - <Tab> - ETC information
@@ -23,6 +27,7 @@ def unicode_to_ascii(s):
 
 # data-processing
 # 1. add space between ?, !, (, ), ., ,
+# 2. Eliminate except either English or Korean 
 
 def string_processing(str) : 
     str = str.lower().strip()
@@ -51,6 +56,34 @@ def create_dataset(path, num_exam=None) :
 
     return zip(*word_pairs)
 
-en, kr = create_dataset(path_to_file)
+###-------------------------------------------------Part II. Tokonizing & split dataset--------------------------------------###
 
-###-------------------------------------------------Part II. Tokonizing--------------------------------------###
+# Use keras.preprocessing.text.tokenizer
+def token(lang) :
+    lang_tokenize = Tokenizer(filter=' ')
+    lang_tokenize = Tokenizer.fit_on_texts(lang)
+
+    # tensor : text => sequence
+    tensor = Tokenizer.sequences_to_texts(lang_tokenize)
+
+    # padding
+    tensor = pad_sequences(tensor, padding='post')
+
+    return lang_tokenize, tensor
+
+# Load dataset with tensor and tokenize
+# With function create_dataset, return (input tensor, target tensor, input tokenize, target tokenize)
+def load_dataset(path, num_exam=None) :
+    # input, target = list
+    # target : korean, input : english
+    input, target = create_dataset(path, num_exam)
+    
+    input_token, input_tensor = token(input)
+    target_token, target_tensor = token(target)
+
+    return input_token, target_token, input_tensor, target_tensor
+
+# Hyper_parameter
+# Dataset을 제한하는 부분, 있어도 없어도 상관없을 듯
+num_examples = 25000
+en_token, kr_token, en_tensor, kr_tensor = load_dataset(path_to_file)
