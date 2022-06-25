@@ -12,6 +12,7 @@ import tensorflow as tf
 from sklearn.model_selection import train_test_split
 from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
+from torch import embedding
 
 # kor-eng text path
 # English - <Tab> - Korean - <Tab> - ETC information
@@ -85,6 +86,31 @@ def load_dataset(path, num_exam=None) :
 
 # Hyper_parameter
 # Dataset을 제한하는 부분, 있어도 없어도 상관없을 듯
-num_examples = 15
+num_examples = 15000
 en_token, kr_token, en_tensor, kr_tensor = load_dataset(path_to_file, num_examples)
-print(en_tensor)
+
+# Dataset을 split합니다.
+# input: en, output: kr
+# K-fold?
+input_tensor_train, input_tensor_test, target_tensor_train, target_tensor_test = train_test_split(en_tensor, kr_tensor, test_size=0.2)
+
+# data_set 출력
+print(len(input_tensor_train), print(len(target_tensor_test)))
+
+###-------------------------------------------------Part III. Hyper-parameter--------------------------------------###
+# 1. 훈련하는 것들의 크기가 얼마인가? 
+# 2. Batch_size는 얼마인가? + Epoch는?
+# 3. Word-embedding은 어느정도 사이즈로 할 것인가?
+# 4. 최대 input, target word size => word_index + 1 (word_index는 tokenize 객체로, len이나 size 함수를 가지고 있지 않음)
+BUFFER_SIZE = len(input_tensor_test) + 1
+BATCH_SIZE = 64
+epoch = len(input_tensor_train) // BATCH_SIZE
+embedding_size = 256 
+units = 1024 # GRU-output size(d_model size, h=16 => 1024/16= 64 <= multi-head attension size)
+
+dataset = tf.data.Dataset.from_tensor_slices((input_tensor_train, target_tensor_train)).shuffle(BUFFER_SIZE).batch(BATCH_SIZE, drop_remainder=True)
+
+example_input_batch, example_target_batch = next(iter(dataset))
+print(example_input_batch.shape[1], example_target_batch.shape[1])
+
+###-------------------------------------------------Part IV. Encoder--------------------------------------###
