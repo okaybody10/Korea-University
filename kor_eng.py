@@ -59,16 +59,16 @@ def create_dataset(path, num_exam=None) :
 ###-------------------------------------------------Part II. Tokonizing & split dataset--------------------------------------###
 
 # Use keras.preprocessing.text.tokenizer
-def token(lang) :
-    lang_tokenize = Tokenizer(filter=' ')
-    lang_tokenize = Tokenizer.fit_on_texts(lang)
 
+def token(lang) :
+    lang_tokenize = Tokenizer(filters=' ')
+    lang_tokenize.fit_on_texts(lang)
     # tensor : text => sequence
-    tensor = Tokenizer.sequences_to_texts(lang_tokenize)
+    tensor = lang_tokenize.texts_to_sequences(lang)
 
     # padding
     tensor = pad_sequences(tensor, padding='post')
-
+    
     return lang_tokenize, tensor
 
 # Load dataset with tensor and tokenize
@@ -77,7 +77,7 @@ def load_dataset(path, num_exam=None) :
     # input, target = list
     # target : korean, input : english
     input, target = create_dataset(path, num_exam)
-    
+
     input_token, input_tensor = token(input)
     target_token, target_tensor = token(target)
 
@@ -85,5 +85,6 @@ def load_dataset(path, num_exam=None) :
 
 # Hyper_parameter
 # Dataset을 제한하는 부분, 있어도 없어도 상관없을 듯
-num_examples = 25000
-en_token, kr_token, en_tensor, kr_tensor = load_dataset(path_to_file)
+num_examples = 15
+en_token, kr_token, en_tensor, kr_tensor = load_dataset(path_to_file, num_examples)
+print(en_tensor)
