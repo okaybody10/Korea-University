@@ -86,6 +86,7 @@ def load_dataset(path, num_exam=None) :
 
 # Hyper_parameter
 # Dataset을 제한하는 부분, 있어도 없어도 상관없을 듯
+# input: en, output: kr
 num_examples = 15000
 en_token, kr_token, en_tensor, kr_tensor = load_dataset(path_to_file, num_examples)
 
@@ -114,3 +115,42 @@ example_input_batch, example_target_batch = next(iter(dataset))
 print(example_input_batch.shape[1], example_target_batch.shape[1])
 
 ###-------------------------------------------------Part IV. Encoder--------------------------------------###
+# vocab_length <-- embedding
+vocab_input_len = len(en_token.word_index) + 1
+vocab_target_len = len(kr_token.word_index) + 1
+# Use GRU, hidden_state initialize : 0
+# LSTM: Several Hyperparameter, will use GRU
+# Encoder structure: 1. embedding vector(input/output,...) 2. GRU 3. GRU output dimension(enc_units) 4. batch_sz
+class Encoder(tf.keras.Model) :
+    def __init__(self, vocab_size, embedding_dim, enc_units, batch_sz) :
+        # enc_units: encoder output dimension, 1024(Optimiality hypermeter condition in paper)
+        super(Encoder, self).__init__()
+        self.batch_size = batch_sz
+        self.enc_units = enc_units
+        self.embedding = tf.keras.layers.Embedding(vocab_size, embedding_dim)
+        # We will use attention, return_sequence: true, return_state= true
+        self.gru = tf.keras.layers.GRU(self.enc_units, return_sequence= True, return_state = True, recurrent_initializer='glorot_uniform')
+    
+    # GRU call
+    def call(self, x, hidden) :
+        x = self.embedding(x)
+        output, state = self.gru(x, initial_state=hidden)
+        return output, state
+
+    def hidden_initialization(self) :
+        return tf.zeros((self.batch_size, self.enc_units))
+    
+# encoder: input word
+encoder = Encoder(vocab_input_len, embedding_size, units, BATCH_SIZE)
+
+example_hidden = encoder.hidden_initialization()
+example_output, example_hidden = encoder(example_input_batch, example_hidden)
+# shape print(output)
+# gru return sequence=true, so sequence also print
+# shape: (batch_size, sequence(total hidden state count), embedding_size(gru_units))
+print('Encoder output state shape {}'.format(example_output))
+# shart print(hidden)
+# shape: (batch_size, embedding_size)
+print('Encoder hidden state shape {}'.format(example_hidden))
+
+# Bahdanuau attention
