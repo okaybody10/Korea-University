@@ -1,3 +1,4 @@
+from cmath import tanh
 import io
 from lib2to3.pgen2.tokenize import tokenize
 import os
@@ -6,12 +7,13 @@ from tokenize import Token
 import unicodedata
 import re
 from venv import create
+from matplotlib.style import context
 
 import numpy as np
 import tensorflow as tf
 from sklearn.model_selection import train_test_split
 from keras.preprocessing.text import Tokenizer
-from keras.preprocessing.sequence import pad_sequences
+from keras_preprocessing.sequence import pad_sequences
 from torch import embedding
 
 # kor-eng text path
@@ -129,7 +131,7 @@ class Encoder(tf.keras.Model) :
         self.enc_units = enc_units
         self.embedding = tf.keras.layers.Embedding(vocab_size, embedding_dim)
         # We will use attention, return_sequence: true, return_state= true
-        self.gru = tf.keras.layers.GRU(self.enc_units, return_sequence= True, return_state = True, recurrent_initializer='glorot_uniform')
+        self.gru = tf.keras.layers.GRU(self.enc_units, return_sequences = True, return_state = True, recurrent_initializer='glorot_uniform')
     
     # GRU call
     def call(self, x, hidden) :
@@ -153,4 +155,41 @@ print('Encoder output state shape {}'.format(example_output))
 # shape: (batch_size, embedding_size)
 print('Encoder hidden state shape {}'.format(example_hidden))
 
+print('Encoder output {}'.format(example_hidden))
+
 # Bahdanuau attention
+class Bahdanuau(tf.keras.layers.Layer) :
+    def __init__(self, units) :
+        super(Bahdanuau, self).__init__()
+        self.W1 = tf.keras.layers.Dense(units)
+        self.W2 = tf.keras.layers.Dense(units)
+        self.W3 = tf.keras.layers.Dense(1)
+
+    # To utilize the attention technique, we have to define Query, Key, and Value.
+    # Query: Hidden state at each timestep in decoder
+    # Key, Value: Hidden state(s) all timesteps in encoder
+    # Number of Key(Value)s are #{Encoder states}
+    # Number of Query: 1
+    # Note that Sequence shape: (batch_size, "sequence_size", embedding_size)
+    # hidden state return shape: (batch_size, embedding_size (line 153)) => Expand dimension to (batch_size, 1, embedding_size)
+
+    def call(self, query, values) :
+        query_expand = tf.expand_dims(query, 1)
+
+        # Attention formula: score(query, hidden i) = W_1^T * tanh(W*query + W'*h_i)
+        # Attention score shape : (batch_size, max_len, 1)
+        attention_score = self.W3(tf.nn.tanh(self.W1(query_expand) + self.W2(values)))
+
+        # attention weight => softmax(attention_score), shape: same as attention_score i.e. (batch_size, max_len, 1)
+        attention_weight = tf.nn.softmax(attention_score, axis=1)
+
+        # Final, dot product of attention_weight and values is context vector
+        # shape: (batch_size, hidden_size)
+        # But attention_weight shape: (batch_size, max_len, 1) / values shape: (batch_size, max_len, hidden_size) => dimension reduction
+        context_vector = attention_weight * values
+        context_vector = tf.reduce_sum(context_vector, axis = 1)
+
+        return context_vector, attention_weight
+
+attention_layer = Bahdanuau(10)
+attention_res, attention_weight = attention_layer(example_hidden, example_output)
