@@ -1,0 +1,45 @@
+{
+  "datatype_keywords": {
+    "정답경계 추출형": "answer_span",
+    "Table 정답추출형": "table",
+    "절차(방법)": "list",
+    "응답 불가형": "unanswerable",
+    "Yes/No 단문형": "yesno",
+    "다지선다형(추론형)": "multi_choice"
+  },
+  "base_data_dir": "/home/kaka/data_link/nia2/admin/base",
+  "data_dir": "/home/kaka/data_link/nia2/admin",
+  "save_dir": "/home/kaka/data_link/nia2/admin",
+  "data_filename_list": {
+    "answer_span": [
+      "admin_answer_span_train.json",
+      "admin_answer_span_val.json",
+      "admin_answer_span_test.json"
+    ],
+    "table": [
+      "admin_table_train.json",
+      "admin_table_val.json",
+      "admin_table_test.json"
+    ],
+    "list": [
+      "admin_list_train.json",
+      "admin_list_val.json",
+      "admin_list_test.json"
+    ],
+    "unanswerable": [
+      "admin_unanswerable_train.json",
+      "admin_unanswerable_val.json",
+      "admin_unanswerable_test.json"
+    ],
+    "yesno": [
+      "admin_yesno_train.json",
+      "admin_yesno_val.json",
+      "admin_yesno_test.json"
+    ],
+    "multi_choice": [
+      "shuffled_admin_multi_choice_train.json",
+      "shuffled_admin_multi_choice_val.json",
+      "shuffled_admin_multi_choice_test.json"
+    ]
+  }
+}
