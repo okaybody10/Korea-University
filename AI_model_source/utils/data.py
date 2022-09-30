@@ -1,5 +1,5 @@
 import torch
-from torch._six import container_abcs
+from collections import abc as container_abcs
 
 default_collate_err_msg_format = (
     "default_collate: batch must contain tensors, numpy arrays, numbers, "

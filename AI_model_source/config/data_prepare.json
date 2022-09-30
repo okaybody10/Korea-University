@@ -7,9 +7,9 @@
     "Yes/No 단문형": "yesno",
     "다지선다형(추론형)": "multi_choice"
   },
-  "base_data_dir": "/home/kaka/data_link/nia2/admin/base",
-  "data_dir": "/home/kaka/data_link/nia2/admin",
-  "save_dir": "/home/kaka/data_link/nia2/admin",
+  "base_data_dir": "/home/sung/Desktop/SJH/datas/base",
+  "data_dir": "/home/sung/Desktop/SJH/datas",
+  "save_dir": "/home/sung/Desktop/SJH/datas",
   "data_filename_list": {
     "answer_span": [
       "admin_answer_span_train.json",

@@ -9,8 +9,10 @@ from transformers.models.electra.configuration_electra import ElectraConfig
 from transformers.models.electra.modeling_electra import (
     ElectraPreTrainedModel,
     ElectraModel,
+    ElectraForPreTraining,
     ElectraClassificationHead,
-    ElectraEmbeddings
+    ElectraEmbeddings,
+    ElectraEncoder
 )
 
 
@@ -22,7 +24,7 @@ class QuestionAnsweringForIntegratedElectra(ElectraPreTrainedModel):
         super().__init__(config)
 
         electra = ElectraModel(config)
-        electra.init_weights()
+        # electra.init_weights()
 
         self.embedding_answer_span = ElectraEmbeddings(config)
         if config.embedding_size != config.hidden_size:
@@ -38,7 +40,7 @@ class QuestionAnsweringForIntegratedElectra(ElectraPreTrainedModel):
 
         self._init_embedding_layers(config.name_or_path, config)
 
-        self.encoder = electra.encoder
+        self.encoder = ElectraEncoder(config)
         # self.init_weights()
         self.num_labels = config.num_labels
 
@@ -289,23 +291,27 @@ class QuestionAnsweringForIntegratedElectra(ElectraPreTrainedModel):
             'multi_choice': self.embedding_multi_choice.state_dict()
         }
 
-        model_electra = ElectraModel.from_pretrained(pre_trained_electra_path_name, config=config)
+        model_electra = ElectraForPreTraining.from_pretrained(pre_trained_electra_path_name, config=config)
         model_electra_param = model_electra.state_dict()
 
         target_model_params = dict()
         data_type = ['answer_span', 'yesno', 'multi_choice']
         for target_key, target_value in model_electra_param.items():
+            print(target_key)
             if 'embedding' in target_key:
                 target_model_params[target_key] = target_value
 
+        print("---------------------------------------------------------------------------------------------------")
         for d in data_type:
             for k, v in target_model_params.items():
-                tmp_k = k[len('embeddings')+1:]
+                tmp_k = k[len('electra.embeddings')+1:]
+                print(tmp_k)
                 embedding_param[d][tmp_k] = v
 
         self.embedding_answer_span.load_state_dict(embedding_param['answer_span'])
         self.embedding_yesno.load_state_dict(embedding_param['yesno'])
         self.embedding_multi_choice.load_state_dict(embedding_param['multi_choice'])
+
 
 
 

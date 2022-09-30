@@ -317,7 +317,7 @@ class MultiChoiceProcessor(DataProcessor):
             for paragraph in entry['paragraphs']:
                 context_text = paragraph['context']
                 for qa in paragraph['qas']:
-                    option_answer_info = qa['answers'][0]
+                    option_answer_info = qa['answers']
                     options = option_answer_info['options']
                     labels = [0] * len(options)
                     answer_option_idx = options.index(option_answer_info['text'])

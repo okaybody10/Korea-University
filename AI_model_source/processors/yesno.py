@@ -299,7 +299,7 @@ class YesNoProcessor(DataProcessor):
                     question = qa['question']
                     qa_id = qa['question_id']
 
-                    answer_str = qa['answers'][0]['text']
+                    answer_str = qa['answers']['text']
                     if answer_str == 'Yes':
                         answer = 1
                     else:

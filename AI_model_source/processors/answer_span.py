@@ -524,7 +524,8 @@ class AnswerSpanProcessor(DataProcessor):
                     is_impossible = qa.get("is_impossible", False)
                     if not is_impossible:
                         if is_training:
-                            answer = qa["answers"][0]
+                            answer = qa["answers"]
+                            print(answer)
                             answer_text = answer["text"]
                             start_position_character = answer["answer_start"]
                         else:

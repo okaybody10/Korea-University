@@ -55,8 +55,8 @@ def save_model(args, output_dir, model, tokenizer, optimizer, scheduler):
     logger.info("Saving model checkpoint to %s", output_dir)
 
     if args.save_optimizer:
-        torch.save(optimizer.state_dict(), os.path.join(output_dir, "optimizer.pt"))
-        torch.save(scheduler.state_dict(), os.path.join(output_dir, "scheduler.pt"))
+        torch.save(optimizer, os.path.join(output_dir, "optimizer.pt"))
+        torch.save(scheduler, os.path.join(output_dir, "scheduler.pt"))
         logger.info("Saving optimizer and scheduler states to %s", output_dir)
 
 
