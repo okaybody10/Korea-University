@@ -88,8 +88,9 @@ def evaluate(examples, predictions):
     f1 = dict()
 
     for example in examples:
+        print(example.answers['text'], example.qas_id)
         example_id = example.qas_id
-        ground_truths = [answer['text'] for answer in example.answers] if not example.is_impossible else ['']
+        ground_truths = [example.answers['text']] if not example.is_impossible else ['']
         prediction = predictions[example_id]
 
         exact_match[example_id] = metric_max_over_ground_truths(exact_match_score, prediction, ground_truths)
